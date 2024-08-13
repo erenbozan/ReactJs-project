@@ -21,6 +21,7 @@ function Home() {
                 (error) => {
                     setIsLoaded(true);
                     setError(error);
+                    console.log("Error:", error); // Hatanın ne olduğunu görmek için bu satırı ekledim
                 }
             )
     }
