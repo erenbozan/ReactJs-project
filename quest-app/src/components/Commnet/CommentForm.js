@@ -16,7 +16,7 @@ function CommentForm(props) {
       },
       body: JSON.stringify({   
         postId: postId,
-        userId: 1,
+        userId: userId,
         text: text
       })
     })

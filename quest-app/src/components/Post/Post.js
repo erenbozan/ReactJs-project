@@ -60,7 +60,10 @@ function Post(props) {
   const checkLikes = () => {
 
     console.log("checkLikes******************************************");
-    var likeControl = likes.find((like) => like.userId === 1);
+    if(localStorage.getItem("currentUsersId") == null){
+      return;
+    }
+    var likeControl = likes.find((like) => like.userId === localStorage.getItem("currentUsersId"));
     
     if(likeControl!=undefined){
 
@@ -193,6 +196,7 @@ function Post(props) {
       </CardContent>
       <CardActions disableSpacing>
         <IconButton 
+          disabled={localStorage.getItem("currentUsersId") == null}
           aria-label="add to favorites"
           onClick={handleFavoriteClick}
         >
@@ -216,7 +220,9 @@ function Post(props) {
             {commentList.map(comment => (
                 <Comment userId={1} userName={"aaa"} text={comment.text} />
             ))}     
-            <CommentForm setNewComment={setNewComment} postId={postId}></CommentForm>
+            {localStorage.getItem("currentUsersId") == null ?"":
+            <CommentForm setNewComment={setNewComment} userId={localStorage.getItem("currentUsersId")} postId={postId}></CommentForm>}
+            
         </CardContent>
       </Collapse>
     </Card>

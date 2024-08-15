@@ -59,7 +59,10 @@ function Home() {
     } else {
         return (
             <div style={backgroundStyle}>
-                <PostForm userId={1} userName={"aaa"} setIsRefreshed = {setIsRefreshed}/>
+                {localStorage.getItem("currentUsersId") == null ?"":
+                <PostForm userId={localStorage.getItem("currentUsersId")} userName={localStorage.getItem("username")} setIsRefreshed = {setIsRefreshed}/>
+                }
+                
                 {postList.map(post => (
                     <Post key={post.id} likes={post.postLikes} postId={post.id} userId={post.userId} userName={post.userName} title={post.title} text={post.text} />
                 ))}

@@ -5,9 +5,22 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import { useNavigate } from "react-router-dom";
+import LockIcon from '@mui/icons-material/Lock';
+
+
 
 function NavBar() {
-    let userId = 5;
+
+    const navigate = useNavigate();
+    
+    const logOutClick = () => {
+        localStorage.removeItem("currentUsersId");
+        localStorage.removeItem("username");
+        localStorage.removeItem("token");
+        navigate(0);
+    }
+
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar style={{ backgroundColor: "lightgreen" }} position="static">
@@ -26,9 +39,17 @@ function NavBar() {
                             Home
                         </Link>
                     </Box>
-                    <Link to={`/users/${userId}`} style={{ backgroundColor: 'white', color: 'gray', padding: '8px', borderRadius: '4px', textDecoration: 'none' }}>
-                        User
-                    </Link>
+                    {localStorage.getItem("currentUsersId") == null ? (
+                        <Link to="/auth" style={{ backgroundColor: 'white', color: 'gray', padding: '8px', borderRadius: '4px', textDecoration: 'none' }}>
+                            Login/Register
+                        </Link>
+                    ) : (
+                        <div><IconButton onClick={logOutClick}>    <LockIcon /> </IconButton>
+                        <Link to={`/users/${localStorage.getItem("currentUsersId")}`} style={{ backgroundColor: 'white', color: 'gray', padding: '8px', borderRadius: '4px', textDecoration: 'none' }}>
+                            User Page
+                        </Link>
+                        </div>
+                    )}
                 </Toolbar>
             </AppBar>
         </Box>
