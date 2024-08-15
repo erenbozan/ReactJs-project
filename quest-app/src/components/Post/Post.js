@@ -61,11 +61,13 @@ function Post(props) {
 
     console.log("checkLikes******************************************");
     if(localStorage.getItem("currentUsersId") == null){
+      console.log("currentUsersId null geldi");
       return;
     }
-    var likeControl = likes.find((like) => like.userId === localStorage.getItem("currentUsersId"));
-    
-    if(likeControl!=undefined){
+    //likes render edilmeye çalışılan postun liklarını liste halinde tutar
+    likes.find((like) => console.log( "like user id si: ", like.userId, "post id si: ", ""+like.postId, "current user id: ", localStorage.getItem("currentUsersId")));
+    var likeControl = likes.find((like) => ""+like.userId === localStorage.getItem("currentUsersId"));
+    if(likeControl!==undefined){
 
       console.log("likeControl id si ID mi: ", likeControl.id);
       setAlreadyLiked(true); 
@@ -91,11 +93,12 @@ function Post(props) {
     fetch("http://localhost:9090/likes", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": localStorage.getItem("token")
       },
       body: JSON.stringify({
         postId: postId,
-        userId: 1
+        userId: localStorage.getItem("currentUsersId")
       })
     })
     .then(response => {
@@ -115,9 +118,10 @@ function Post(props) {
 
   const deleteLike = () => {
     var deneme;
-    if(likes.find((like) => like.userId === 1) !== undefined  && newLikeHandler == null){
-      console.log("if statementi içindeyim silinen şey",(Number(likes.find((like) => like.userId === 1).id)));
-      deneme = (Number(likes.find((like) => like.userId === 1).id));
+    //newLikeHandler is checking if the like is from current render or site is reloded
+    if(likes.find((like) => ""+like.userId === localStorage.getItem("currentUsersId")) !== undefined  && newLikeHandler == null){
+      console.log("if statementi içindeyim silinen şey",(Number(likes.find((like) => ""+like.userId === localStorage.getItem("currentUsersId")).id)));
+      deneme = (Number(likes.find((like) => ""+like.userId === localStorage.getItem("currentUsersId")).id));
     }
     else{
       console.log("else statementi içindeyim new like fln da şu",newLikeHandler);
@@ -128,7 +132,8 @@ function Post(props) {
     fetch(`http://localhost:9090/likes/`+deneme, {  // Use path variable instead of query parameter
       method: "DELETE",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": localStorage.getItem("token")
       }
     })
     .then(response => {
