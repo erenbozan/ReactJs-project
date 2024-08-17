@@ -81,6 +81,7 @@ function Post(props) {
         .then(res => res.json())  
         .then(
             (result) => {   
+                console.log("result bu result var ya comments objesi",result);
                 setCommentList(result);           
             },  
             (error) => {
@@ -223,7 +224,8 @@ function Post(props) {
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
             {commentList.map(comment => (
-                <Comment userId={1} userName={"aaa"} text={comment.text} />
+              console.log("commentList.map içindeyim",comment.username),
+                <Comment userId={comment.userId} userName={comment.username} text={comment.text} />
             ))}     
             {localStorage.getItem("currentUsersId") == null ?"":
             <CommentForm setNewComment={setNewComment} userId={localStorage.getItem("currentUsersId")} postId={postId}></CommentForm>}

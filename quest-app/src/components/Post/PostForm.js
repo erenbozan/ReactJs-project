@@ -19,7 +19,8 @@ function PostForm(props) {
     fetch("http://localhost:9090/posts", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": localStorage.getItem("token")
       },
       body: JSON.stringify({
         title: title,

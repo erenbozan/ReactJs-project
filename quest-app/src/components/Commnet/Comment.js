@@ -50,7 +50,7 @@ function Comment(props) {
                     <InputAdornment position="start">
                         <Link to={`/users/${userId}`} style={{ textDecoration: 'none' }}>
                             <StyledAvatar aria-label="recipe">
-                                {userName.charAt(0).toUpperCase()}
+                                {userName ? userName.charAt(0).toUpperCase() : '?'}
                             </StyledAvatar> 
                         </Link>
                     </InputAdornment> 
