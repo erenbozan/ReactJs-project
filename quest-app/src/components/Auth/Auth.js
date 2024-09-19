@@ -1,4 +1,4 @@
-import { Button, FormControl, FormHelperText, TextField } from "@mui/material";
+import { Button, FormControl, FormHelperText, Snackbar, TextField } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -7,6 +7,7 @@ function Auth() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
+    const [openSnackbar, setOpenSnackbar] = useState(false);
 
     const handleUsernameChange = (event) => {
         setUsername(event.target.value);
@@ -52,12 +53,15 @@ function Auth() {
             if (path === "login") {
                 console.log("Login response data:", data);
                 // Safely access the userId and message from the resolved data
-                localStorage.setItem('token', data.message);
+                localStorage.setItem('token', data.accessToken);
                 localStorage.setItem('currentUsersId', data.userId);
                 localStorage.setItem('username', username);
                 navigate(0);
             }
-            navigate(0);
+            console.log('Success:', data);
+            setOpenSnackbar(true);
+            setTimeout(() => setOpenSnackbar(false), 2000);
+            
         }).catch((error) => {
             console.error("Error acucried in auth class:", error);
         });
@@ -104,7 +108,15 @@ function Auth() {
             >
                 Login
             </Button>
+            <Snackbar
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                open={openSnackbar}
+                message="user created successfully"
+                autoHideDuration={1000}
+            />  
         </FormControl>
+        
+        
     );
 }
 
