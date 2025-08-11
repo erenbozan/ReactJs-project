@@ -16,7 +16,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Link } from "react-router-dom";  
 import Comment from "../Commnet/Comment";
 import CommentForm from "../Commnet/CommentForm";
-
+import { Box, Chip } from "@mui/material";
 
 function Post(props) {
   const { title, text, userId, userName, postId, likes} = props;
@@ -46,7 +46,6 @@ function Post(props) {
     }
   };
 
-
   useEffect(() => {
     if (expanded) {
       refreshComments();
@@ -58,20 +57,16 @@ function Post(props) {
   }, []);
 
   const checkLikes = () => {
-
     console.log("checkLikes******************************************");
     if(localStorage.getItem("currentUsersId") == null){
       console.log("currentUsersId null geldi");
       return;
     }
-    //likes render edilmeye çalışılan postun liklarını liste halinde tutar
     likes.find((like) => console.log( "like user id si: ", like.userId, "post id si: ", ""+like.postId, "current user id: ", localStorage.getItem("currentUsersId")));
     var likeControl = likes.find((like) => ""+like.userId === localStorage.getItem("currentUsersId"));
     if(likeControl!==undefined){
-
       console.log("likeControl id si ID mi: ", likeControl.id);
       setAlreadyLiked(true); 
-
     }
   }
 
@@ -119,7 +114,6 @@ function Post(props) {
 
   const deleteLike = () => {
     var deneme;
-    //newLikeHandler is checking if the like is from current render or site is reloded
     if(likes.find((like) => ""+like.userId === localStorage.getItem("currentUsersId")) !== undefined  && newLikeHandler == null){
       console.log("if statementi içindeyim silinen şey",(Number(likes.find((like) => ""+like.userId === localStorage.getItem("currentUsersId")).id)));
       deneme = (Number(likes.find((like) => ""+like.userId === localStorage.getItem("currentUsersId")).id));
@@ -129,8 +123,7 @@ function Post(props) {
       deneme = (Number(newLikeHandler));
     }
 
-
-    fetch(`http://localhost:9090/likes/`+deneme, {  // Use path variable instead of query parameter
+    fetch(`http://localhost:9090/likes/`+deneme, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -143,17 +136,13 @@ function Post(props) {
           throw new Error(`HTTP error! status: ${response.status}, message: ${text}`);
         });
       }
-      return response.text();  // DELETE request usually doesn't return JSON data
+      return response.text();
     })
     .then(data => {
       console.log('Success:', data);
     })
     .catch(error => console.error('Error:', error.message));
   }
-  
-
-
-  
 
   const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -166,49 +155,126 @@ function Post(props) {
     }),
   }));
 
+  const cardStyle = {
+    background: 'rgba(255, 255, 255, 0.05)',
+    backdropFilter: 'blur(10px)',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    borderRadius: '16px',
+    margin: '16px 0',
+    transition: 'all 0.3s ease',
+    '&:hover': {
+      transform: 'translateY(-4px)',
+      boxShadow: '0 8px 25px rgba(0, 0, 0, 0.3)'
+    }
+  };
+
+  const headerStyle = {
+    '& .MuiCardHeader-content': {
+      flex: '1 1 auto',
+      textAlign: 'left'
+    },
+    '& .MuiCardHeader-action': {
+      alignSelf: 'center',
+      marginTop: 0,
+      marginRight: 0
+    },
+    '& .MuiCardHeader-title': {
+      color: '#e0e0e0',
+      fontWeight: 600
+    },
+    '& .MuiCardHeader-subheader': {
+      color: 'rgba(255, 255, 255, 0.7)'
+    }
+  };
+
+  const contentStyle = {
+    '& .MuiTypography-root': {
+      color: '#e0e0e0',
+      lineHeight: 1.6
+    }
+  };
+
+  const actionsStyle = {
+    '& .MuiIconButton-root': {
+      color: 'rgba(255, 255, 255, 0.7)',
+      transition: 'all 0.3s ease',
+      '&:hover': {
+        color: '#667eea',
+        transform: 'scale(1.1)'
+      }
+    }
+  };
+
   return (
-    <Card sx={{ maxWidth: 600, minWidth: 350, padding: '20px' }}>
+    <Card sx={cardStyle} className="fade-in">
       <CardHeader
-         avatar={
-          <Link to={`/users/${userId}`} style={{  textDecoration: 'none' }}>
-            <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+        avatar={
+          <Link to={`/users/${userId}`} style={{ textDecoration: 'none' }}>
+            <Avatar 
+              sx={{ 
+                bgcolor: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                fontWeight: 600,
+                fontSize: '18px'
+              }} 
+              aria-label="recipe"
+            >
               {userName.charAt(0).toUpperCase()}
             </Avatar>
           </Link>
         }
         action={
-          <IconButton aria-label="settings">
+          <IconButton aria-label="settings" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
             <MoreVertIcon />
           </IconButton>
         }
-        title={title}
-        sx={{
-          '& .MuiCardHeader-content': {
-            flex: '1 1 auto',
-            textAlign: 'left'
-          },
-          '& .MuiCardHeader-action': {
-            alignSelf: 'center',
-            marginTop: 0,
-            marginRight: 0
-          }
-        }}
+        title={
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography variant="h6" sx={{ color: '#e0e0e0', fontWeight: 600 }}>
+              {title}
+            </Typography>
+            <Chip 
+              label={`${likecount} likes`} 
+              size="small" 
+              sx={{ 
+                background: 'rgba(255, 255, 255, 0.1)',
+                color: 'rgba(255, 255, 255, 0.8)',
+                fontSize: '12px'
+              }} 
+            />
+          </Box>
+        }
+        subheader={
+          <Link to={`/users/${userId}`} style={{ textDecoration: 'none', color: 'rgba(255, 255, 255, 0.7)' }}>
+            @{userName}
+          </Link>
+        }
+        sx={headerStyle}
       />
       
-      <CardContent>
-        <Typography variant="body1" color="text.primary">
+      <CardContent sx={contentStyle}>
+        <Typography variant="body1" sx={{ color: '#e0e0e0', lineHeight: 1.6 }}>
           {text}
         </Typography>
       </CardContent>
-      <CardActions disableSpacing>
+      
+      <CardActions disableSpacing sx={actionsStyle}>
         <IconButton 
           disabled={localStorage.getItem("currentUsersId") == null}
           aria-label="add to favorites"
           onClick={handleFavoriteClick}
+          sx={{
+            color: alreadyLiked ? '#ff6b6b' : 'rgba(255, 255, 255, 0.7)',
+            '&:hover': {
+              color: alreadyLiked ? '#ff5252' : '#667eea'
+            }
+          }}
         >
-          <FavoriteIcon sx={{ color: alreadyLiked ? pink[300] : 'inherit' }} />
+          <FavoriteIcon />
         </IconButton>
-        {likecount}
+        <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', ml: 1 }}>
+          {likecount}
+        </Typography>
         <IconButton aria-label="share">
           <ShareIcon />
         </IconButton>
@@ -221,15 +287,22 @@ function Post(props) {
           <ExpandMoreIcon />
         </ExpandMore>
       </CardActions>
+      
       <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent>
-            {commentList.map(comment => (
-              console.log("commentList.map içindeyim",comment.username),
-                <Comment userId={comment.userId} userName={comment.username} text={comment.text} />
-            ))}     
-            {localStorage.getItem("currentUsersId") == null ?"":
-            <CommentForm setNewComment={setNewComment} userId={localStorage.getItem("currentUsersId")} postId={postId}></CommentForm>}
-            
+        <CardContent sx={{ 
+          background: 'rgba(255, 255, 255, 0.02)',
+          borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+          mt: 2
+        }}>
+          <Typography variant="h6" sx={{ color: '#e0e0e0', mb: 2, fontWeight: 600 }}>
+            Comments ({commentList.length})
+          </Typography>
+          {commentList.map(comment => (
+            <Comment key={comment.id} userId={comment.userId} userName={comment.username} text={comment.text} />
+          ))}     
+          {localStorage.getItem("currentUsersId") == null ? "" :
+            <CommentForm setNewComment={setNewComment} userId={localStorage.getItem("currentUsersId")} postId={postId} />
+          }
         </CardContent>
       </Collapse>
     </Card>
